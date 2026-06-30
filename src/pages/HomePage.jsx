@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import NotificationBell from '../components/NotificationBell';
 
 function HomePage() {
   const [updates, setUpdates] = useState([]);
@@ -88,6 +89,9 @@ function HomePage() {
 
   return (
     <div className="home-container">
+      {/* Cái Chuông Thông Báo (Chỉ hiển thị ở Trang Chủ) */}
+      <NotificationBell />
+
       {/* KHU VỰC BÌA (HERO SECTION) */}
       <div className="hero">
         <h1 className="title">Chuẩn đầu ra tin học Nông Lâm</h1>
@@ -113,7 +117,7 @@ function HomePage() {
 
       {/* KHU VỰC BẢNG TIN (UPDATES) */}
       <div className="updates-section">
-        <h2>🔔 Cộng Đồng Chia Sẻ Tài Liệu</h2>
+        <h2>Cộng Đồng Chia Sẻ Tài Liệu</h2>
 
         {/* BỘ LỌC (FILTER) */}
         <div className="filter-group">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './NotificationBell.css';
@@ -8,6 +8,7 @@ function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0); // Chỉ đếm cho vui để tạo màu đỏ
   const navigate = useNavigate();
+  const containerRef = useRef(null); // Dùng để xác định vùng của cái chuông
 
   // Load thông báo
   const fetchNotifications = async () => {
@@ -42,6 +43,20 @@ function NotificationBell() {
     return () => clearInterval(interval);
   }, []);
 
+  // Tính năng: Bấm ra ngoài vùng chuông thì tự động tắt
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Nếu có bảng đang mở VÀ vị trí bấm chuột không nằm trong container của chuông
+      if (isOpen && containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
@@ -74,7 +89,7 @@ function NotificationBell() {
   };
 
   return (
-    <div className="notification-container">
+    <div className="notification-container" ref={containerRef}>
       {/* Nút Chuông */}
       <button className="bell-button" onClick={handleToggle}>
         🔔
