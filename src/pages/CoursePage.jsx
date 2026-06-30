@@ -61,6 +61,23 @@ function CoursePage({ courseType }) {
     }
   };
 
+  // 4. Xử lý Xóa Bình luận (Dành cho Admin)
+  const handleDeleteComment = async (commentId) => {
+    const pass = prompt("Vui lòng nhập Mật Khẩu để xóa bình luận này:");
+    if (!pass) return;
+    try {
+      await axios.delete(`https://it-proficiency-backend.onrender.com/api/comments/${commentId}`, {
+        headers: { 'x-admin-password': pass }
+      });
+      // Load lại bình luận
+      const res = await axios.get(`https://it-proficiency-backend.onrender.com/api/comments/${activeVideo._id}`);
+      setComments(res.data);
+      alert("✅ Đã xóa bình luận thành công!");
+    } catch (error) {
+      alert(error.response?.data?.message || "❌ Lỗi: Bạn không có quyền xóa!");
+    }
+  };
+
   const removeAccents = (str) => {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   };
@@ -168,7 +185,15 @@ function CoursePage({ courseType }) {
                     <div key={c._id} className="comment-item">
                       <div className="comment-header">
                         <strong>👤 {c.name}</strong>
-                        <span className="comment-date">{new Date(c.createdAt).toLocaleString('vi-VN')}</span>
+                        <div>
+                          <span className="comment-date">{new Date(c.createdAt).toLocaleString('vi-VN')}</span>
+                          <button 
+                            onClick={() => handleDeleteComment(c._id)} 
+                            className="btn-delete" 
+                            style={{marginLeft: '15px'}} 
+                            title="Xóa bình luận này"
+                          >🗑️ Xóa</button>
+                        </div>
                       </div>
                       <p className="comment-text">{c.content}</p>
                     </div>
