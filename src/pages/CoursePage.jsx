@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function CoursePage({ courseType }) {
@@ -11,6 +11,8 @@ function CoursePage({ courseType }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({ name: '', content: '' });
 
+  const location = useLocation();
+
   // 1. Lấy danh sách Video khi vào trang
   useEffect(() => {
     const fetchVideos = async () => {
@@ -18,14 +20,23 @@ function CoursePage({ courseType }) {
         const response = await axios.get(`https://it-proficiency-backend.onrender.com/api/videos?courseType=${courseType}`);
         setVideos(response.data);
         if (response.data.length > 0) {
-          setActiveVideo(response.data[0]); // Mặc định mở bài đầu tiên
+          // Đọc tham số trên thanh địa chỉ (để biết người dùng vừa bấm từ Chuông sang)
+          const queryParams = new URLSearchParams(location.search);
+          const videoIdFromUrl = queryParams.get('videoId');
+          
+          if (videoIdFromUrl) {
+            const targetVideo = response.data.find(v => v._id === videoIdFromUrl);
+            setActiveVideo(targetVideo || response.data[0]); // Nếu có id thì mở bài đó, không thì mở bài đầu
+          } else {
+            setActiveVideo(response.data[0]); // Mặc định mở bài đầu tiên
+          }
         }
       } catch (error) {
         console.error("Lỗi lấy video:", error);
       }
     };
     fetchVideos();
-  }, [courseType]);
+  }, [courseType, location.search]); // Chạy lại khi tham số đường link thay đổi
 
   // 2. Lấy danh sách Bình luận MỖI KHI ĐỔI BÀI HỌC (Đổi activeVideo)
   useEffect(() => {
