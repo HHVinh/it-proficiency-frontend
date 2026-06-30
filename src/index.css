@@ -81,6 +81,32 @@ body { font-family: 'Inter', Helvetica, sans-serif; background-color: #1a1a1a; c
 
 .visit-badge { margin-top: 20px; font-size: 1.1rem; color: #f39c12; background: rgba(0,0,0,0.2); padding: 10px; display: inline-block; border-radius: 20px; }
 
+/* Nút Góp Ý */
+.btn-feedback {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: linear-gradient(45deg, #f39c12, #e67e22);
+  color: white;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+  transition: 0.3s;
+  animation: pulseButton 2s infinite;
+}
+.btn-feedback:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.6);
+  color: white;
+}
+@keyframes pulseButton {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
 /* Filter Group */
 .filter-group { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
 .filter-btn { padding: 8px 15px; border: 1px solid #3498db; background: transparent; color: #3498db; border-radius: 20px; cursor: pointer; transition: 0.2s; }
@@ -88,7 +114,7 @@ body { font-family: 'Inter', Helvetica, sans-serif; background-color: #1a1a1a; c
 
 /* Form đăng bài */
 .post-form { background-color: #34495e; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.post-form input, .post-form select { padding: 10px; border-radius: 5px; border: none; outline: none; }
+.post-form input, .post-form select { padding: 10px; border-radius: 5px; border: none; outline: none; height: 44px; box-sizing: border-box; font-size: 1rem; }
 .post-form input { flex: 1; min-width: 200px; }
 .btn-post { background-color: #f39c12; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; }
 .btn-post:hover { background-color: #e67e22; }

@@ -113,6 +113,12 @@ function HomePage() {
             📜 Quyết định về chuẩn đầu ra
           </a>
         </div>
+
+        <div>
+          <a href="https://forms.gle/Pg4J5cGKrmRcbY1KA" target="_blank" rel="noreferrer" className="btn-feedback">
+            💡 Góp ý phát triển Website
+          </a>
+        </div>
       </div>
 
       {/* KHU VỰC BẢNG TIN (UPDATES) */}
