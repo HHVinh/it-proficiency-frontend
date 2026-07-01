@@ -113,11 +113,11 @@ export default function Navbar({ isDark, onToggleDark }) {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-150">
             <GraduationCap className="w-4 h-4 text-white" />
           </div>
-          <div className="flex flex-col">
-            <h1 className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] leading-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              Nong Lam IT Learning
-            </h1>
-            <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400">Dự án Hỗ trợ Sinh viên</span>
+          <div className="flex items-center">
+            <span className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px]" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Nong Lam IT
+            </span>
+            <span className="text-sm sm:text-[15px] text-slate-400 dark:text-slate-500 ml-1">Learning</span>
           </div>
         </Link>
 
@@ -161,9 +161,9 @@ export default function Navbar({ isDark, onToggleDark }) {
         {/* Right Actions */}
         <div className="flex items-center gap-1.5">
           {/* Feedback Form Button */}
-          <a href="https://forms.gle/Pg4J5cGKrmRcbY1KA" target="_blank" rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-400 hover:bg-amber-500 text-amber-900 text-xs font-bold rounded-full transition-all duration-150 hover:scale-105 shadow hover:shadow-md whitespace-nowrap">
-            ✉ Góp ý phát triển
+          <a href="https://forms.gle/Pg4J5cGKrmRcbY1KA" target="_blank" rel="noopener noreferrer" 
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-amber-100 text-amber-800 text-xs font-bold hover:bg-amber-200 transition-colors">
+            <Smile className="w-4 h-4 sm:w-3.5 sm:h-3.5" /> <span className="hidden sm:inline">Góp ý phát triển</span>
           </a>
 
           {/* Bell Notification */}
