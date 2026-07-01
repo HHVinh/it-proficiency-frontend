@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
-  Star, Globe, BookOpen, Users, ChevronRight, Monitor, 
+  Star, Globe, BookOpen, Users, ChevronRight, ChevronDown, Monitor, 
   FileSpreadsheet, Database, Play, Upload, Filter, Smile, 
   Trash2, Calendar, GraduationCap, Download
 } from 'lucide-react';
@@ -183,17 +183,20 @@ export default function HomePage() {
                   onChange={e => setNewUpdate({...newUpdate, driveLink: e.target.value})}
                   required
                 />
-                <select
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-                  value={newUpdate.category}
-                  onChange={e => setNewUpdate({...newUpdate, category: e.target.value})}
-                  required>
-                  <option value="" disabled>-- Chọn học phần --</option>
-                  <option value="Access">Access</option>
-                  <option value="Tin A">Tin A (Phần 1)</option>
-                  <option value="Tin B">Tin B (Phần 2)</option>
-                  <option value="Chung">Chung</option>
-                </select>
+                <div className="relative w-full">
+                  <select
+                    className="w-full appearance-none px-4 py-3 pr-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                    value={newUpdate.category}
+                    onChange={e => setNewUpdate({...newUpdate, category: e.target.value})}
+                    required>
+                    <option value="" disabled>-- Chọn học phần --</option>
+                    <option value="Access">Access</option>
+                    <option value="Tin A">Tin A (Phần 1)</option>
+                    <option value="Tin B">Tin B (Phần 2)</option>
+                    <option value="Chung">Chung</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
               </div>
               <div className="flex justify-end">
                 <button type="submit" disabled={submitting}

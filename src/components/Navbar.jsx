@@ -113,11 +113,11 @@ export default function Navbar({ isDark, onToggleDark }) {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-150">
             <GraduationCap className="w-4 h-4 text-white" />
           </div>
-          <div className="hidden sm:block">
-            <span className="font-bold text-slate-900 dark:text-white text-sm" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              Nong Lam IT
-            </span>
-            <span className="hidden lg:inline text-xs text-slate-400 dark:text-slate-500 ml-1">Learning</span>
+          <div className="flex flex-col">
+            <h1 className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] leading-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Nong Lam IT Learning
+            </h1>
+            <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400">Dự án Hỗ trợ Sinh viên</span>
           </div>
         </Link>
 
