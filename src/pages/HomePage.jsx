@@ -36,6 +36,13 @@ export default function HomePage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const fetchUpdates = async () => {
+    try {
+      const response = await axios.get('https://it-proficiency-backend.onrender.com/api/updates');
+      setUpdates(response.data);
+    } catch (error) { console.error("Lỗi lấy thông báo:", error); }
+  };
+
   useEffect(() => {
     const hitVisit = async () => {
       try {
@@ -46,13 +53,6 @@ export default function HomePage() {
     hitVisit();
     fetchUpdates();
   }, []);
-
-  const fetchUpdates = async () => {
-    try {
-      const response = await axios.get('https://it-proficiency-backend.onrender.com/api/updates');
-      setUpdates(response.data);
-    } catch (error) { console.error("Lỗi lấy thông báo:", error); }
-  };
 
   const handlePostUpdate = async (e) => {
     e.preventDefault();
@@ -88,7 +88,7 @@ export default function HomePage() {
     }
   };
 
-  const filteredUpdates = [...updates].reverse().filter(item => filter === 'Tất cả' ? true : item.category === filter);
+  const filteredUpdates = [...updates].filter(item => filter === 'Tất cả' ? true : item.category === filter);
   const displayedUpdates = filteredUpdates.slice(0, visibleCount);
 
   const courseCards = [

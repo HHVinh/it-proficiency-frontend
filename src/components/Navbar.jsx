@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
-  Bell, Sun, Moon, Menu, X, ChevronDown, ExternalLink, Globe, GraduationCap, Monitor, FileSpreadsheet, Database, Trash2
+  Bell, Sun, Moon, Menu, X, ChevronDown, ExternalLink, Globe, GraduationCap, Monitor, FileSpreadsheet, Database, Trash2, NotebookPen
 } from "lucide-react";
 
 const cn = (...cls) => cls.filter(Boolean).join(" ");
@@ -163,7 +163,7 @@ export default function Navbar({ isDark, onToggleDark }) {
           {/* Feedback Form Button */}
           <a href="https://forms.gle/Pg4J5cGKrmRcbY1KA" target="_blank" rel="noopener noreferrer" 
             className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-amber-100 text-amber-800 text-xs font-bold hover:bg-amber-200 transition-colors">
-            <Smile className="w-4 h-4 sm:w-3.5 sm:h-3.5" /> <span className="hidden sm:inline">Góp ý phát triển</span>
+            <NotebookPen className="w-4 h-4 sm:w-3.5 sm:h-3.5" /> <span className="hidden sm:inline">Góp ý phát triển</span>
           </a>
 
           {/* Bell Notification */}
