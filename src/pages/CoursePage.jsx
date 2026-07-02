@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { 
-  ArrowLeft, BookOpen, Star, Play, ChevronRight, MessageSquare, Send, Search, Trash2
+  ArrowLeft, BookOpen, Star, Play, ChevronRight, ChevronDown, MessageSquare, Send, Search, Trash2
 } from 'lucide-react';
 
 const cn = (...cls) => cls.filter(Boolean).join(" ");
@@ -11,6 +11,7 @@ function CoursePage({ courseType }) {
   const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeVideo, setActiveVideo] = useState(null);
+  const [openSections, setOpenSections] = useState({});
 
   // State cho Bình luận
   const [comments, setComments] = useState([]);
@@ -47,6 +48,12 @@ function CoursePage({ courseType }) {
   // 2. Lấy danh sách Bình luận MỖI KHI ĐỔI BÀI HỌC
   useEffect(() => {
     if (!activeVideo) return;
+    
+    // Tự động mở section chứa video đang xem
+    if (activeVideo.section) {
+      setOpenSections(prev => ({ ...prev, [activeVideo.section]: true }));
+    }
+
     const fetchComments = async () => {
       try {
         const res = await axios.get(`https://it-proficiency-backend.onrender.com/api/comments/${activeVideo._id}`);
@@ -57,6 +64,11 @@ function CoursePage({ courseType }) {
     };
     fetchComments();
   }, [activeVideo]);
+
+  // Toggle Accordion Section
+  const toggleSection = (section) => {
+    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   // 3. Gửi Bình luận mới
   const handlePostComment = async (e) => {
@@ -105,6 +117,13 @@ function CoursePage({ courseType }) {
     return tenVideoKhongDau.includes(chuTimKiemKhongDau);
   });
 
+  const groupedVideos = filteredVideos.reduce((acc, video) => {
+    const section = video.section || "Chưa phân loại";
+    if (!acc[section]) acc[section] = [];
+    acc[section].push(video);
+    return acc;
+  }, {});
+
   // Tùy chỉnh thông tin theo khóa học
   const getCourseMeta = () => {
     switch(courseType) {
@@ -126,13 +145,23 @@ function CoursePage({ courseType }) {
 
   const meta = getCourseMeta();
 
-  // Bảng màu tự động dựa trên color
+  // Bảng màu tự động dựa trên color (Dành cho Header & Viền Video)
   const colorMap = {
-    blue: { badge: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300", glow: "ring-blue-400/30", btn: "from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600", activeBg: "bg-blue-50 dark:bg-blue-900/20 border-blue-500", activeText: "text-blue-700 dark:text-blue-300", iconBg: "bg-blue-500" },
-    green: { badge: "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300", glow: "ring-green-400/30", btn: "from-green-600 to-green-500 hover:from-green-700 hover:to-green-600", activeBg: "bg-green-50 dark:bg-green-900/20 border-green-500", activeText: "text-green-700 dark:text-green-300", iconBg: "bg-green-500" },
-    red: { badge: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300", glow: "ring-red-400/30", btn: "from-red-500 to-red-400 hover:from-red-600 hover:to-red-500", activeBg: "bg-red-50 dark:bg-red-900/20 border-red-500", activeText: "text-red-700 dark:text-red-300", iconBg: "bg-red-500" },
+    blue: { badge: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300", glow: "ring-blue-400/30", btn: "from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600" },
+    green: { badge: "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300", glow: "ring-green-400/30", btn: "from-green-600 to-green-500 hover:from-green-700 hover:to-green-600" },
+    red: { badge: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300", glow: "ring-red-400/30", btn: "from-red-500 to-red-400 hover:from-red-600 hover:to-red-500" },
   };
   const colors = colorMap[meta.color];
+
+  // Bảng màu đồng bộ cho Danh sách bài học (Sidebar) - Màu Vàng (Amber)
+  const sidebarColors = {
+    activeBg: "bg-amber-50 dark:bg-amber-900/20",
+    activeText: "text-amber-700 dark:text-amber-400",
+    iconBg: "bg-gradient-to-br from-amber-400 to-amber-600",
+    sectionActiveBg: "bg-amber-50/80 dark:bg-amber-900/10",
+    sectionActiveBorder: "border-amber-500"
+  };
+
   const activeVideoIndex = videos.findIndex(v => v._id === activeVideo?._id);
 
   return (
@@ -196,35 +225,63 @@ function CoursePage({ courseType }) {
               </div>
               
               <div className="overflow-y-auto max-h-72 md:max-h-[calc(100vh-300px)] divide-y divide-slate-50 dark:divide-slate-700/50">
-                {filteredVideos.map((vid, i) => {
-                  const isActive = activeVideo?._id === vid._id;
-                  const actualIndex = videos.findIndex(v => v._id === vid._id);
-                  
+                {Object.entries(groupedVideos).map(([section, sectionVideos]) => {
+                  const isOpen = openSections[section] || searchTerm.trim() !== ""; // Tự động mở nếu đang tìm kiếm
+                  const activeCount = sectionVideos.filter(v => v._id === activeVideo?._id).length;
+                  const isSectionActive = activeCount > 0;
+
                   return (
-                    <button key={vid._id} onClick={() => setActiveVideo(vid)}
-                      className={cn(
-                        "w-full text-left px-4 py-3.5 flex items-start gap-3 transition-colors",
-                        isActive
-                          ? `${colors.activeBg} border-l-2`
-                          : "hover:bg-slate-50 dark:hover:bg-slate-700/50 border-l-2 border-transparent"
-                      )}>
-                      <div className={cn(
-                        "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold transition-colors",
-                        isActive
-                          ? `${colors.iconBg} text-white shadow-md`
-                          : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
-                      )}>
-                        {isActive ? <Play className="w-3 h-3 fill-current" /> : actualIndex + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={cn(
-                          "text-xs font-semibold leading-snug truncate",
-                          isActive ? colors.activeText : "text-slate-700 dark:text-slate-300"
-                        )}>
-                          {vid.title}
-                        </p>
-                      </div>
-                    </button>
+                    <div key={section} className="flex flex-col bg-white dark:bg-slate-800">
+                      <button 
+                        onClick={() => toggleSection(section)}
+                        className={cn(
+                          "w-full flex items-center justify-between px-4 py-3 bg-slate-50/60 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-colors border-l-4 text-left",
+                          isSectionActive ? `${sidebarColors.sectionActiveBg} ${sidebarColors.sectionActiveBorder}` : "border-slate-200 dark:border-slate-700"
+                        )}
+                      >
+                        <div className="flex flex-col items-start gap-0.5 pr-2">
+                          <span className={cn("text-[13px] font-bold leading-tight", isSectionActive ? sidebarColors.activeText : "text-slate-800 dark:text-slate-200")}>{section}</span>
+                          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">{sectionVideos.length} bài học</span>
+                        </div>
+                        <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0", isOpen && "rotate-180")} />
+                      </button>
+                      
+                      {isOpen && (
+                        <div className="flex flex-col divide-y divide-slate-50 dark:divide-slate-700/30 bg-white dark:bg-slate-800">
+                          {sectionVideos.map((vid) => {
+                            const isActive = activeVideo?._id === vid._id;
+                            const actualIndex = videos.findIndex(v => v._id === vid._id);
+                            
+                            return (
+                              <button key={vid._id} onClick={() => setActiveVideo(vid)}
+                                className={cn(
+                                  "w-full text-left px-4 py-3 pl-5 flex items-start gap-3 transition-colors",
+                                  isActive
+                                    ? `${sidebarColors.activeBg} border-l-2 ${sidebarColors.sectionActiveBorder}`
+                                    : "hover:bg-slate-50 dark:hover:bg-slate-700/30 border-l-2 border-transparent"
+                                )}>
+                                <div className={cn(
+                                  "w-6 h-6 rounded flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold transition-colors",
+                                  isActive
+                                    ? `${sidebarColors.iconBg} text-white shadow-sm`
+                                    : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
+                                )}>
+                                  {isActive ? <Play className="w-2.5 h-2.5 fill-current" /> : actualIndex + 1}
+                                </div>
+                                <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[24px]">
+                                  <p className={cn(
+                                    "text-[12px] font-semibold leading-snug truncate",
+                                    isActive ? sidebarColors.activeText : "text-slate-600 dark:text-slate-300"
+                                  )}>
+                                    {vid.title}
+                                  </p>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
                 {filteredVideos.length === 0 && (
